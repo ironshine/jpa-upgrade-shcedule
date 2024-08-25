@@ -24,5 +24,6 @@ public class SchedulePageResponseDto {
         this.content = schedule.getContent();
         this.postTime = schedule.getPostTime();
         this.updateTime = schedule.getUpdateTime();
+        this.commentCount = schedule.getCommentList().size();
     }
 }
