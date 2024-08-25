@@ -4,7 +4,6 @@ import com.sparta.jpaupgradeschedule.dto.ScheduleSaveRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +27,13 @@ public class Schedule extends Timestamped {
     @JoinColumn(name = "schedule_id")
     private List<Comment> commentList = new ArrayList<>();
 
-    public Schedule(String username, String title, String content) {
-        this.username = username;
-        this.title = title;
-        this.content = content;
+    @OneToMany(mappedBy = "schedule")
+    private List<UserSchedule> userList = new ArrayList<>();
+
+    public Schedule(ScheduleSaveRequestDto requestDto) {
+        this.username = requestDto.getUsername();
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
     }
 
     public void update(ScheduleSaveRequestDto requestDto) {
