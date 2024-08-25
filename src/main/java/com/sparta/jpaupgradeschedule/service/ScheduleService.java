@@ -1,12 +1,19 @@
 package com.sparta.jpaupgradeschedule.service;
 
+import com.sparta.jpaupgradeschedule.dto.SchedulePageResponseDto;
 import com.sparta.jpaupgradeschedule.dto.ScheduleSaveRequestDto;
 import com.sparta.jpaupgradeschedule.dto.ScheduleSaveResponseDto;
 import com.sparta.jpaupgradeschedule.entity.Schedule;
 import com.sparta.jpaupgradeschedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -56,5 +63,15 @@ public class ScheduleService {
                 idSchedule.getPostTime(),
                 idSchedule.getUpdateTime()
         );
+    }
+
+    public Page<SchedulePageResponseDto> getSchedules(int page, int size) {
+        Sort.Direction direction = Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, "updateTime");
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Schedule> scheduleList = scheduleRepository.findAll(pageable);
+
+        return scheduleList.map(SchedulePageResponseDto::new);
     }
 }
