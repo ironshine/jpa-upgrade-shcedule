@@ -74,4 +74,10 @@ public class ScheduleService {
 
         return scheduleList.map(SchedulePageResponseDto::new);
     }
+
+    @Transactional
+    public String deleteSchedule(Long id) {
+        scheduleRepository.delete(scheduleRepository.findById(id).orElseThrow(() -> new NullPointerException("없는 아이디")));
+        return "삭제완료";
+    }
 }

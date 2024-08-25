@@ -24,7 +24,7 @@ public class Schedule extends Timestamped {
     @Column
     private String content; // 할일 내용
 
-    @OneToMany
+    @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "schedule_id")
     private List<Comment> commentList = new ArrayList<>();
 

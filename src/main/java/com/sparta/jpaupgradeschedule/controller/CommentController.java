@@ -19,8 +19,8 @@ public class CommentController {
 
     // 댓글 저장
     @PostMapping("/comments")
-    public ResponseEntity<CommentSaveResponseDto> saveComment(@RequestBody CommentSaveRequestDto requestDto) {
-        return ResponseEntity.ok(commentService.saveComment(requestDto));
+    public ResponseEntity<CommentSaveResponseDto> saveComment(@RequestParam("schedule") Long id, @RequestBody CommentSaveRequestDto requestDto) {
+        return ResponseEntity.ok(commentService.saveComment(id, requestDto));
     }
 
     // 댓글 단건 조회

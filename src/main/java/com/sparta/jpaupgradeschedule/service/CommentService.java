@@ -5,7 +5,9 @@ import com.sparta.jpaupgradeschedule.dto.CommentSaveResponseDto;
 import com.sparta.jpaupgradeschedule.dto.CommentUpdateRequestDto;
 import com.sparta.jpaupgradeschedule.dto.CommentUpdateResponseDto;
 import com.sparta.jpaupgradeschedule.entity.Comment;
+import com.sparta.jpaupgradeschedule.entity.Schedule;
 import com.sparta.jpaupgradeschedule.repository.CommentRepository;
+import com.sparta.jpaupgradeschedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +21,13 @@ import java.util.List;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final ScheduleRepository scheduleRepository;
 
     @Transactional
-    public CommentSaveResponseDto saveComment(CommentSaveRequestDto requestDto) {
+    public CommentSaveResponseDto saveComment(Long id, CommentSaveRequestDto requestDto) {
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new NullPointerException("id없음"));
         Comment newComment = new Comment(requestDto.getUsername(), requestDto.getContent());
+        schedule.getCommentList().add(newComment);
         Comment saveComment = commentRepository.save(newComment);
 
         return new CommentSaveResponseDto(

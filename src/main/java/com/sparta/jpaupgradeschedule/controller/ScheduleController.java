@@ -46,4 +46,9 @@ public class ScheduleController {
             @RequestParam(value = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(scheduleService.getSchedules(page - 1, size));
     }
+
+    @DeleteMapping("/schedules/delete/{id}")
+    public String deleteSchedule(@PathVariable Long id) {
+        return scheduleService.deleteSchedule(id);
+    }
 }
