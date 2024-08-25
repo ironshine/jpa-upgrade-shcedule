@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class SchedulePageResponseDto {
     private Long id;
-    private String username;
+    private Long userId;
     private String title;
     private String content;
     private LocalDateTime postTime;
@@ -19,7 +19,7 @@ public class SchedulePageResponseDto {
 
     public SchedulePageResponseDto(Schedule schedule) {
         this.id = schedule.getId();
-        this.username = schedule.getUsername();
+        this.userId = schedule.getUserId();
         this.title = schedule.getTitle();
         this.content = schedule.getContent();
         this.postTime = schedule.getPostTime();

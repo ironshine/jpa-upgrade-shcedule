@@ -28,4 +28,9 @@ public class User extends Timestamped{ // 작성일, 수정일
         this.username = requestDto.getUsername();
         this.email = requestDto.getEmail();
     }
+
+    public void update(UserSaveRequestDto requestDto) {
+        this.username = requestDto.getUsername();
+        this.email = requestDto.getEmail();
+    }
 }

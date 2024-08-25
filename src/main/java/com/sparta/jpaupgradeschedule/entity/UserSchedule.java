@@ -2,7 +2,6 @@ package com.sparta.jpaupgradeschedule.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Getter

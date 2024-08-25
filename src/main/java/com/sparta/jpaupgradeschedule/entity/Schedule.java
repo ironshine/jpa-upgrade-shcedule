@@ -17,7 +17,7 @@ public class Schedule extends Timestamped {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
-    private String username; // 작성 유저명
+    private Long userId; // 작성 유저명
     @Column
     private String title; // 할일 제목
     @Column
@@ -31,13 +31,13 @@ public class Schedule extends Timestamped {
     private List<UserSchedule> userList = new ArrayList<>();
 
     public Schedule(ScheduleSaveRequestDto requestDto) {
-        this.username = requestDto.getUsername();
+        this.userId = requestDto.getUserId();
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
     }
 
     public void update(ScheduleSaveRequestDto requestDto) {
-        this.username= requestDto.getUsername();
+        this.userId = requestDto.getUserId();
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
     }
