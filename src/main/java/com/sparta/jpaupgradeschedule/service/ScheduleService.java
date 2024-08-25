@@ -46,7 +46,7 @@ public class ScheduleService {
     @Transactional
     public ScheduleSaveResponseDto updateSchedule(Long id, ScheduleSaveRequestDto requestDto) {
         Schedule idSchedule = scheduleRepository.findById(id).orElseThrow(() -> new NullPointerException("없는 아이디"));
-        idSchedule.setUpdateSchedule(requestDto);
+        idSchedule.update(requestDto);
 
         return new ScheduleSaveResponseDto(
                 idSchedule.getId(),
