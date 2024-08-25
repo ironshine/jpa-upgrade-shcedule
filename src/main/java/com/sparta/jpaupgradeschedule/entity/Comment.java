@@ -7,12 +7,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "comments")
+@Table(name = "comment")
 public class Comment extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +23,6 @@ public class Comment extends Timestamped{
     private String username; // 작성 유저명
     @Column
     private String content; // 댓글 내용
-
-    @OneToOne
-    @JoinColumn(name = "schedule_id")
-    private Schedule schedule;
 
     public Comment(String username, String content) {
         this.username = username;

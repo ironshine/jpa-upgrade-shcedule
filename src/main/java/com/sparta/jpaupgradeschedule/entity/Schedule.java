@@ -6,10 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
-@Table(name = "schedules")
+@Table(name = "schedule")
 @NoArgsConstructor
 public class Schedule extends Timestamped {
 
@@ -22,8 +25,9 @@ public class Schedule extends Timestamped {
     @Column
     private String content; // 할일 내용
 
-    @OneToOne(mappedBy = "schedule")
-    private Comment comment;
+    @OneToMany
+    @JoinColumn(name = "schedule_id")
+    private List<Comment> commentList = new ArrayList<>();
 
     public Schedule(String username, String title, String content) {
         this.username = username;
