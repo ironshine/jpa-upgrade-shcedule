@@ -1,5 +1,6 @@
 package com.sparta.jpaupgradeschedule.dto;
 
+import com.sparta.jpaupgradeschedule.entity.Schedule;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -13,12 +14,12 @@ public class ScheduleSaveResponseDto {
     private final LocalDateTime postTime;
     private final LocalDateTime updateTime;
 
-    public ScheduleSaveResponseDto(Long id, Long userId, String title, String content, LocalDateTime postTime, LocalDateTime updateTime) {
-        this.id = id;
-        this.userId = userId;
-        this.title = title;
-        this.content = content;
-        this.postTime = postTime;
-        this.updateTime = updateTime;
+    public ScheduleSaveResponseDto(Schedule schedule) {
+        this.id = schedule.getId();
+        this.userId = schedule.getUserId();
+        this.title = schedule.getTitle();
+        this.content = schedule.getContent();
+        this.postTime = schedule.getPostTime();
+        this.updateTime = schedule.getUpdateTime();
     }
 }

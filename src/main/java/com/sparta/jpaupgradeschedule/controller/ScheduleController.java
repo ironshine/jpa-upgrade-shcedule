@@ -1,5 +1,6 @@
 package com.sparta.jpaupgradeschedule.controller;
 
+import com.sparta.jpaupgradeschedule.dto.ScheduleGetIdResponseDto;
 import com.sparta.jpaupgradeschedule.dto.SchedulePageResponseDto;
 import com.sparta.jpaupgradeschedule.dto.ScheduleSaveRequestDto;
 import com.sparta.jpaupgradeschedule.dto.ScheduleSaveResponseDto;
@@ -28,7 +29,7 @@ public class ScheduleController {
 
     // 일정 단건 조회
     @GetMapping("/schedules/{id}")
-    public ResponseEntity<ScheduleSaveResponseDto> getSchedule(@PathVariable Long id) {
+    public ResponseEntity<ScheduleGetIdResponseDto> getSchedule(@PathVariable Long id) {
         return ResponseEntity.ok(scheduleService.getSchedule(id));
     }
 
@@ -41,7 +42,7 @@ public class ScheduleController {
     // 일정을 Spring Data JPA 의 Pageable 과 Page 인터페이스를 활용하여 페이지네이션을 구현
     @GetMapping("/schedules")
     public ResponseEntity<Page<SchedulePageResponseDto>> getSchedules(
-            @RequestParam("page") int page,
+            @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(scheduleService.getSchedules(page - 1, size));
     }

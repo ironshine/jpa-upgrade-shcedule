@@ -28,7 +28,7 @@ public class UserService {
     }
 
     public UserSaveResponseDto getUser(Long id) {
-        User idUser = userRepository.findById(id).orElseThrow(() -> new NullPointerException("id 없음"));
+        User idUser = userFindById(id);
 
         return new UserSaveResponseDto(idUser);
     }
@@ -46,7 +46,7 @@ public class UserService {
 
     @Transactional
     public UserSaveResponseDto updateUser(Long id, UserSaveRequestDto requestDto) {
-        User idUser = userRepository.findById(id).orElseThrow(() -> new NullPointerException("id 없음"));
+        User idUser = userFindById(id);
         idUser.update(requestDto);
 
         return new UserSaveResponseDto(idUser);
@@ -54,7 +54,11 @@ public class UserService {
 
     @Transactional
     public String deleteUser(Long id) {
-        userRepository.delete(userRepository.findById(id).orElseThrow(() -> new NullPointerException("id 없음")));
+        userRepository.delete(userFindById(id));
         return "삭제완료";
+    }
+
+    public User userFindById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new NullPointerException("id 없음"));
     }
 }

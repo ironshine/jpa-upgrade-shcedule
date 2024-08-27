@@ -21,33 +21,21 @@ import java.util.List;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final ScheduleRepository scheduleRepository;
+    private final ScheduleService scheduleService;
 
     @Transactional
     public CommentSaveResponseDto saveComment(Long id, CommentSaveRequestDto requestDto) {
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new NullPointerException("id없음"));
+        Schedule schedule = scheduleService.scheduleFindById(id);
         Comment newComment = new Comment(requestDto.getUsername(), requestDto.getContent());
         schedule.getCommentList().add(newComment);
         Comment saveComment = commentRepository.save(newComment);
 
-        return new CommentSaveResponseDto(
-                saveComment.getId(),
-                saveComment.getUsername(),
-                saveComment.getContent(),
-                saveComment.getPostTime(),
-                saveComment.getUpdateTime()
-        );
+        return new CommentSaveResponseDto(saveComment);
     }
 
     public CommentSaveResponseDto getComment(Long id) {
-        Comment idComment = commentRepository.findById(id).orElseThrow(() -> new NullPointerException("id없음"));
-        return new CommentSaveResponseDto(
-                idComment.getId(),
-                idComment.getUsername(),
-                idComment.getContent(),
-                idComment.getPostTime(),
-                idComment.getUpdateTime()
-        );
+        Comment idComment = commentFindById(id);
+        return new CommentSaveResponseDto(idComment);
     }
 
     public List<CommentSaveResponseDto> getComments() {
@@ -55,13 +43,7 @@ public class CommentService {
 
         List<CommentSaveResponseDto> dtoList = new ArrayList<>();
         for (Comment comment : commentList) {
-            CommentSaveResponseDto dto = new CommentSaveResponseDto(
-                    comment.getId(),
-                    comment.getUsername(),
-                    comment.getContent(),
-                    comment.getPostTime(),
-                    comment.getUpdateTime()
-            );
+            CommentSaveResponseDto dto = new CommentSaveResponseDto(comment);
             dtoList.add(dto);
         }
         return dtoList;
@@ -69,20 +51,20 @@ public class CommentService {
 
     @Transactional
     public CommentUpdateResponseDto updateComment(Long id, CommentUpdateRequestDto requestDto) {
-        Comment comment = commentRepository.findById(id).orElseThrow(() -> new NullPointerException("id 없음"));
+        Comment comment = commentFindById(id);
 
         comment.update(requestDto);
 
-        return new CommentUpdateResponseDto(
-                comment.getId(),
-                comment.getUsername(),
-                comment.getContent()
-        );
+        return new CommentUpdateResponseDto(comment);
     }
 
     @Transactional
     public String deleteComment(Long id) {
-        commentRepository.delete(commentRepository.findById(id).orElseThrow(() -> new NullPointerException("id 없음")));
+        commentRepository.delete(commentFindById(id));
         return "삭제완료";
+    }
+
+    public Comment commentFindById(Long id) {
+        return commentRepository.findById(id).orElseThrow(() -> new NullPointerException("id 없음"));
     }
 }

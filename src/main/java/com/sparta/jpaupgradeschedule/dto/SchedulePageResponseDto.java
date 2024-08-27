@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class SchedulePageResponseDto {
     private Long id;
     private Long userId;
+//    private List<UserResponseDto> userList;
     private String title;
     private String content;
     private LocalDateTime postTime;
@@ -20,6 +21,7 @@ public class SchedulePageResponseDto {
     public SchedulePageResponseDto(Schedule schedule) {
         this.id = schedule.getId();
         this.userId = schedule.getUserId();
+//        this.userList = schedule.getUserList();
         this.title = schedule.getTitle();
         this.content = schedule.getContent();
         this.postTime = schedule.getPostTime();

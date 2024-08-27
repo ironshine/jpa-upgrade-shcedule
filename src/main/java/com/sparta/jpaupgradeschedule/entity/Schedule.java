@@ -27,7 +27,7 @@ public class Schedule extends Timestamped {
     @JoinColumn(name = "schedule_id")
     private List<Comment> commentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
     private List<UserSchedule> userList = new ArrayList<>();
 
     public Schedule(ScheduleSaveRequestDto requestDto) {
@@ -37,7 +37,6 @@ public class Schedule extends Timestamped {
     }
 
     public void update(ScheduleSaveRequestDto requestDto) {
-        this.userId = requestDto.getUserId();
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
     }

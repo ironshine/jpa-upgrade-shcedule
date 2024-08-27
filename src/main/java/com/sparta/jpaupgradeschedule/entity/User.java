@@ -21,7 +21,7 @@ public class User extends Timestamped{ // 작성일, 수정일
     private String email; // 이메일
 
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<UserSchedule> scheduleList = new ArrayList<>();
 
     public User(UserSaveRequestDto requestDto) {

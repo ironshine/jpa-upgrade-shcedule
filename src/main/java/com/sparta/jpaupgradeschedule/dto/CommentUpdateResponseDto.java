@@ -1,8 +1,7 @@
 package com.sparta.jpaupgradeschedule.dto;
 
+import com.sparta.jpaupgradeschedule.entity.Comment;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 @Getter
 public class CommentUpdateResponseDto {
@@ -10,9 +9,9 @@ public class CommentUpdateResponseDto {
     private final String username;
     private final String content;
 
-    public CommentUpdateResponseDto(Long id, String username, String content) {
-        this.id = id;
-        this.username = username;
-        this.content = content;
+    public CommentUpdateResponseDto(Comment comment) {
+        this.id = comment.getId();
+        this.username = comment.getUsername();
+        this.content = comment.getContent();
     }
 }

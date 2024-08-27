@@ -1,8 +1,6 @@
 package com.sparta.jpaupgradeschedule.service;
 
-import com.sparta.jpaupgradeschedule.dto.SchedulePageResponseDto;
-import com.sparta.jpaupgradeschedule.dto.ScheduleSaveRequestDto;
-import com.sparta.jpaupgradeschedule.dto.ScheduleSaveResponseDto;
+import com.sparta.jpaupgradeschedule.dto.*;
 import com.sparta.jpaupgradeschedule.entity.Schedule;
 import com.sparta.jpaupgradeschedule.entity.User;
 import com.sparta.jpaupgradeschedule.entity.UserSchedule;
@@ -17,6 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -25,72 +25,48 @@ import java.util.Set;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final UserScheduleRepository userScheduleRepository;
 
     @Transactional
     public ScheduleSaveResponseDto saveSchedule(ScheduleSaveRequestDto requestDto, Set<User> user) {
-        User idUser = userRepository.findById(requestDto.getUserId()).orElseThrow(() -> new NullPointerException("없는 아이디"));
+        User idUser = userService.userFindById(requestDto.getUserId());
         Schedule newSchedule = new Schedule(requestDto);
 
-        UserSchedule userSchedule = new UserSchedule();
-        userSchedule.setUser(idUser);
-        userSchedule.setSchedule(newSchedule);
-
-        userScheduleRepository.save(userSchedule);
+        saveUserSchedule(idUser, newSchedule);
 
         if(user != null) {
             for (User u : user) {
-                if (u.getId().equals(requestDto.getUserId())) {
-                    continue;
+                if (!u.getId().equals(requestDto.getUserId())) {
+                    userService.userFindById(u.getId());
+                    saveUserSchedule(u,newSchedule);
                 }
-                userRepository.findById(u.getId()).orElseThrow(() -> new NullPointerException("id 없음"));
-                UserSchedule userSchedules = new UserSchedule();
-                userSchedules.setUser(u);
-                userSchedules.setSchedule(newSchedule);
-
-                userScheduleRepository.save(userSchedules);
             }
         }
-
         Schedule saveSchedule = scheduleRepository.save(newSchedule);
 
-
-        return new ScheduleSaveResponseDto(
-                saveSchedule.getId(),
-                saveSchedule.getUserId(),
-                saveSchedule.getTitle(),
-                saveSchedule.getContent(),
-                saveSchedule.getPostTime(),
-                saveSchedule.getUpdateTime()
-        );
+        return new ScheduleSaveResponseDto(saveSchedule);
     }
 
-    public ScheduleSaveResponseDto getSchedule(Long id) {
-        Schedule idSchedule = scheduleRepository.findById(id).orElseThrow(() -> new NullPointerException("없는 아이디"));
-        return new ScheduleSaveResponseDto(
-                idSchedule.getId(),
-                idSchedule.getUserId(),
-                idSchedule.getTitle(),
-                idSchedule.getContent(),
-                idSchedule.getPostTime(),
-                idSchedule.getUpdateTime()
-        );
+    public ScheduleGetIdResponseDto getSchedule(Long id) {
+        Schedule idSchedule = scheduleFindById(id);
+
+        List<UserSchedule> userScheduleList = userScheduleRepository.findAllBySchedule(idSchedule);
+        List<UserResponseDto> userList = new ArrayList<>();
+
+        for (UserSchedule userSchedule : userScheduleList) {
+            userList.add(new UserResponseDto(userSchedule.getUser()));
+        }
+
+        return new ScheduleGetIdResponseDto(idSchedule, userList);
     }
 
     @Transactional
     public ScheduleSaveResponseDto updateSchedule(Long id, ScheduleSaveRequestDto requestDto) {
-        Schedule idSchedule = scheduleRepository.findById(id).orElseThrow(() -> new NullPointerException("없는 아이디"));
+        Schedule idSchedule = scheduleFindById(id);
         idSchedule.update(requestDto);
 
-        return new ScheduleSaveResponseDto(
-                idSchedule.getId(),
-                idSchedule.getUserId(),
-                idSchedule.getTitle(),
-                idSchedule.getContent(),
-                idSchedule.getPostTime(),
-                idSchedule.getUpdateTime()
-        );
+        return new ScheduleSaveResponseDto(idSchedule);
     }
 
     public Page<SchedulePageResponseDto> getSchedules(int page, int size) {
@@ -105,7 +81,17 @@ public class ScheduleService {
 
     @Transactional
     public String deleteSchedule(Long id) {
-        scheduleRepository.delete(scheduleRepository.findById(id).orElseThrow(() -> new NullPointerException("없는 아이디")));
+        scheduleRepository.delete(scheduleFindById(id));
         return "삭제완료";
+    }
+
+    public Schedule scheduleFindById(Long id) {
+        return scheduleRepository.findById(id).orElseThrow(() -> new NullPointerException("없는 아이디"));
+    }
+    public void saveUserSchedule(User user, Schedule schedule){
+        UserSchedule userSchedules = new UserSchedule();
+        userSchedules.setUser(user);
+        userSchedules.setSchedule(schedule);
+        userScheduleRepository.save(userSchedules);
     }
 }
