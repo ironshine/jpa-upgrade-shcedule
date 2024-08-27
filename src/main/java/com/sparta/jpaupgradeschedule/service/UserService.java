@@ -1,9 +1,13 @@
 package com.sparta.jpaupgradeschedule.service;
 
+import com.sparta.jpaupgradeschedule.config.PasswordEncoder;
 import com.sparta.jpaupgradeschedule.dto.UserSaveRequestDto;
 import com.sparta.jpaupgradeschedule.dto.UserSaveResponseDto;
 import com.sparta.jpaupgradeschedule.entity.User;
+import com.sparta.jpaupgradeschedule.entity.UserRoleEnum;
+import com.sparta.jpaupgradeschedule.jwt.JwtUtil;
 import com.sparta.jpaupgradeschedule.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +21,20 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Transactional
-    public UserSaveResponseDto saveUser(UserSaveRequestDto requestDto) {
+    public UserSaveResponseDto saveUser(UserSaveRequestDto requestDto, HttpServletResponse res) {
+        requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
         User newUser = new User(requestDto);
 
         User saveUser = userRepository.save(newUser);
+
+        // JWT 생성
+        String token = jwtUtil.createToken(saveUser.getId(), UserRoleEnum.USER);
+        // JWT 쿠키 저장
+        jwtUtil.addJwtToCookie(token, res);
 
         return new UserSaveResponseDto(saveUser);
     }

@@ -2,7 +2,9 @@ package com.sparta.jpaupgradeschedule.controller;
 
 import com.sparta.jpaupgradeschedule.dto.UserSaveRequestDto;
 import com.sparta.jpaupgradeschedule.dto.UserSaveResponseDto;
+import com.sparta.jpaupgradeschedule.jwt.JwtUtil;
 import com.sparta.jpaupgradeschedule.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +19,8 @@ public class UserController {
 
     // 저장
     @PostMapping("/users")
-    public ResponseEntity<UserSaveResponseDto> saveUser(@RequestBody UserSaveRequestDto requestDto) {
-        return ResponseEntity.ok(userService.saveUser(requestDto));
+    public ResponseEntity<UserSaveResponseDto> saveUser(@RequestBody UserSaveRequestDto requestDto, HttpServletResponse res) {
+        return ResponseEntity.ok(userService.saveUser(requestDto, res));
     }
 
     // 단건 조회

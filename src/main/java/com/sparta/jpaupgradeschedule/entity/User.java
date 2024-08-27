@@ -19,7 +19,8 @@ public class User extends Timestamped{ // 작성일, 수정일
     private String username; // 유저명
     @Column
     private String email; // 이메일
-
+    @Column
+    private String password; // 비밀번호
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<UserSchedule> scheduleList = new ArrayList<>();
@@ -27,6 +28,7 @@ public class User extends Timestamped{ // 작성일, 수정일
     public User(UserSaveRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.email = requestDto.getEmail();
+        this.password = requestDto.getPassword();
     }
 
     public void update(UserSaveRequestDto requestDto) {
