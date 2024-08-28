@@ -50,12 +50,15 @@ public class AuthFilter implements Filter {
                 // 토큰 검증
                 if (!jwtUtil.validateToken(token)) {
                     httpServletResponse.sendError(401, "Wrong Token");
-                } else {
+                }
+                else {
                     // 토큰에서 사용자 정보 가져오기
                     Claims info = jwtUtil.getUserInfoFromToken(token);
 
                     User user = userRepository.findByEmail(info.getSubject());
-                    if (!user.getEmail().equals(info.getSubject())) {
+                    if (user == null) {
+                        httpServletResponse.sendError(401, "Not Found Email");
+                    } else if (!user.getEmail().equals(info.getSubject())) {
                         httpServletResponse.sendError(401, "Not Found Email");
                     }
 

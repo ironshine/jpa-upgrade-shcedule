@@ -6,11 +6,14 @@ import com.sparta.jpaupgradeschedule.dto.ScheduleSaveRequestDto;
 import com.sparta.jpaupgradeschedule.dto.ScheduleSaveResponseDto;
 import com.sparta.jpaupgradeschedule.entity.User;
 import com.sparta.jpaupgradeschedule.service.ScheduleService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Set;
 
 @RestController
@@ -35,8 +38,9 @@ public class ScheduleController {
 
     // 일정 수정
     @PutMapping("/schedules/update/{id}")
-    public ResponseEntity<ScheduleSaveResponseDto> updateSchedule(@PathVariable Long id, @RequestBody ScheduleSaveRequestDto requestDto) {
-        return ResponseEntity.ok(scheduleService.updateSchedule(id, requestDto));
+    public ResponseEntity<ScheduleSaveResponseDto> updateSchedule
+    (@PathVariable Long id, @RequestBody ScheduleSaveRequestDto requestDto, HttpServletResponse res, HttpServletRequest req) throws IOException {
+        return ResponseEntity.ok(scheduleService.updateSchedule(id, requestDto, res, req));
     }
 
     // 일정을 Spring Data JPA 의 Pageable 과 Page 인터페이스를 활용하여 페이지네이션을 구현
@@ -47,8 +51,9 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleService.getSchedules(page - 1, size));
     }
 
+    // 일정 삭제
     @DeleteMapping("/schedules/delete/{id}")
-    public String deleteSchedule(@PathVariable Long id) {
-        return scheduleService.deleteSchedule(id);
+    public String deleteSchedule(@PathVariable Long id, HttpServletResponse res, HttpServletRequest req) throws IOException{
+        return scheduleService.deleteSchedule(id, res, req);
     }
 }
