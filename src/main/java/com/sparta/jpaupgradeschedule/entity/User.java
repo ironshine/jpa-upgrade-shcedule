@@ -15,12 +15,15 @@ import java.util.List;
 public class User extends Timestamped{ // 작성일, 수정일
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+    @Column(nullable = false, unique = true)
     private String username; // 유저명
-    @Column
+    @Column(nullable = false, unique = true)
     private String email; // 이메일
     @Column
     private String password; // 비밀번호
+    @Column
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<UserSchedule> scheduleList = new ArrayList<>();
@@ -29,6 +32,11 @@ public class User extends Timestamped{ // 작성일, 수정일
         this.username = requestDto.getUsername();
         this.email = requestDto.getEmail();
         this.password = requestDto.getPassword();
+        if (requestDto.getRole()) {
+            this.role = UserRoleEnum.ADMIN;
+        } else {
+            this.role = UserRoleEnum.USER;
+        }
     }
 
     public void update(UserSaveRequestDto requestDto) {

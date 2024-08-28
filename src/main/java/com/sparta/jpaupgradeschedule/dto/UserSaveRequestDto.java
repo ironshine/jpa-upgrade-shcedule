@@ -10,6 +10,7 @@ public class UserSaveRequestDto {
     private String username;
     private String email;
     private String password;
+    private Boolean role;
     private LocalDateTime postTime;
     private LocalDateTime updateTime;
 

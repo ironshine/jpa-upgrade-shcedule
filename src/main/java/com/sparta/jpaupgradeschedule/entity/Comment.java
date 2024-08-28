@@ -13,7 +13,7 @@ public class Comment extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+    @Column(nullable = false, unique = true)
     private String username; // 작성 유저명
     @Column
     private String content; // 댓글 내용

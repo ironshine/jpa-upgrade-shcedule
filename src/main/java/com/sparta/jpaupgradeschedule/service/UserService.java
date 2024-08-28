@@ -1,17 +1,20 @@
 package com.sparta.jpaupgradeschedule.service;
 
 import com.sparta.jpaupgradeschedule.config.PasswordEncoder;
+import com.sparta.jpaupgradeschedule.dto.LoginRequestDto;
 import com.sparta.jpaupgradeschedule.dto.UserSaveRequestDto;
 import com.sparta.jpaupgradeschedule.dto.UserSaveResponseDto;
 import com.sparta.jpaupgradeschedule.entity.User;
 import com.sparta.jpaupgradeschedule.entity.UserRoleEnum;
 import com.sparta.jpaupgradeschedule.jwt.JwtUtil;
 import com.sparta.jpaupgradeschedule.repository.UserRepository;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +35,7 @@ public class UserService {
         User saveUser = userRepository.save(newUser);
 
         // JWT 생성
-        String token = jwtUtil.createToken(saveUser.getId(), UserRoleEnum.USER);
+        String token = jwtUtil.createToken(saveUser.getEmail(), UserRoleEnum.USER);
         // JWT 쿠키 저장
         jwtUtil.addJwtToCookie(token, res);
 
@@ -68,6 +71,26 @@ public class UserService {
     public String deleteUser(Long id) {
         userRepository.delete(userFindById(id));
         return "삭제완료";
+    }
+
+    public void login(LoginRequestDto requestDto, HttpServletResponse res) throws IOException {
+        String email = requestDto.getEmail();
+        String password = requestDto.getPassword();
+
+        // email 확인
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            res.sendError(401,"401, email error");
+        }
+
+        // 비밀번호 확인
+        else if (!passwordEncoder.matches(password, user.getPassword())) {
+            res.sendError(401, "401, password error");
+        } else {
+            // JWT 생성
+            String token = jwtUtil.createToken(user.getEmail(), user.getRole());
+            jwtUtil.addJwtToCookie(token, res);
+        }
     }
 
     public User userFindById(Long id) {
